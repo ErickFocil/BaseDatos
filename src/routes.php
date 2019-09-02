@@ -55,17 +55,50 @@ return function (App $app) {
 
 		return $this->response->withJson($json,200);
 	});
+	
+	$app->post('/addproduct', function (Request $request, Response $response, array $args) use ($container) {
+		$param = $request->getParsedBody();
+		try{
+			$data = [
+				"nombre_producto" => $param['nombre_producto'],
+				"cantidad_existencia" => $param['cantidad_existencia'],
+				"precio" => $param['precio']
+			];
+			$sql = "INSERT INTO productos (nombre_producto,cantidad_existencia,precio) VALUE (:nombre_producto,:cantidad_existencia,:precio)";
+			$stm = $this->db->prepare($sql);
+
+			if($stm->execute($data)){
+				$json = array(
+					"status" => "succcess",
+					"message" => "Producto guardado correctamente"
+				);
+			}else{
+				$json = array(
+					"status" => "error",
+					"message" => "No se pudo agregar el producto"
+				);
+			}
+
+		}catch(PDOException $e){
+			$json = array(
+				"status" => "error",
+				"message" => $e
+			);
+		}
+		
+		return $this->response->withJson($json,200);
+	});
 
 	$app->get('/convertdate', function (Request $request, Response $response, array $args) use ($container) {
 		$get = $request->getQueryParams();
             if(!empty($get['date'])){
 			$date_convert = $get['date'];
 		}else{
-                  $json = array( "status" => "error", "message" => "El campo fecha es necesario"); 
-                  return $this->response->withJson($json,200);
-            }
+			$json = array( "status" => "error", "message" => "El campo fecha es necesario"); 
+			return $this->response->withJson($json,200);
+		}
 
-            $json = convertDateSpanish($date_convert);
+		$json = convertDateSpanish($date_convert);
 		return $this->response->withJson($json,200);
 	});
 
