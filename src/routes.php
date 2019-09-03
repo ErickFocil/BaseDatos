@@ -39,19 +39,6 @@ return function (App $app) {
 		}catch(PDOException $e){
 
 		}
-		
-
-		/*if( count($data) > 0){
-			$json = array(
-				"status" => "success",
-				"data" => $data
-			);
-		}else{
-			$json = array(
-				"status" => "error",
-				"message" => "No hay productos disponibles"
-			);
-		}*/
 
 		return $this->response->withJson($json,200);
 	});
@@ -76,6 +63,37 @@ return function (App $app) {
 				$json = array(
 					"status" => "error",
 					"message" => "No se pudo agregar el producto"
+				);
+			}
+
+		}catch(PDOException $e){
+			$json = array(
+				"status" => "error",
+				"message" => $e
+			);
+		}
+		
+		return $this->response->withJson($json,200);
+	});
+
+	$app->post('/deleteproduct', function (Request $request, Response $response, array $args) use ($container) {
+		$param = $request->getParsedBody();
+		try{
+			$data = [
+				"idproducto" => $param['idproducto']
+			];
+			$sql = "DELETE FROM productos WHERE idproducto = :idproducto";
+			$stm = $this->db->prepare($sql);
+
+			if($stm->execute($data)){
+				$json = array(
+					"status" => "succcess",
+					"message" => "Producto eliminado correctamente"
+				);
+			}else{
+				$json = array(
+					"status" => "error",
+					"message" => "No se pudo eliminar el producto"
 				);
 			}
 
