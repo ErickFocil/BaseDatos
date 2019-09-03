@@ -107,6 +107,40 @@ return function (App $app) {
 		return $this->response->withJson($json,200);
 	});
 
+	$app->post('/updateproduct', function (Request $request, Response $response, array $args) use ($container) {
+		$param = $request->getParsedBody();
+		try{
+			$data = [
+				"idproducto" => $param['idproducto'],
+				"nombre_producto" => $param['nombre_producto'],
+				"cantidad_existencia" => $param['cantidad_existencia'],
+				"precio" => $param['precio']
+			];
+			$sql = "UPDATE productos SET nombre_producto = :nombre_producto, cantidad_existencia = :cantidad_existencia, precio = :precio WHERE idproducto = :idproducto";
+			$stm = $this->db->prepare($sql);
+
+			if($stm->execute($data)){
+				$json = array(
+					"status" => "succcess",
+					"message" => "Producto actualizado correctamente"
+				);
+			}else{
+				$json = array(
+					"status" => "error",
+					"message" => "No se pudo actualizar el producto"
+				);
+			}
+
+		}catch(PDOException $e){
+			$json = array(
+				"status" => "error",
+				"message" => $e
+			);
+		}
+		
+		return $this->response->withJson($json,200);
+	});
+
 	$app->get('/convertdate', function (Request $request, Response $response, array $args) use ($container) {
 		$get = $request->getQueryParams();
             if(!empty($get['date'])){
