@@ -56,7 +56,7 @@ return function (App $app) {
 
 			if($stm->execute($data)){
 				$json = array(
-					"status" => "succcess",
+					"status" => "success",
 					"message" => "Producto guardado correctamente"
 				);
 			}else{
@@ -87,7 +87,7 @@ return function (App $app) {
 
 			if($stm->execute($data)){
 				$json = array(
-					"status" => "succcess",
+					"status" => "success",
 					"message" => "Producto eliminado correctamente"
 				);
 			}else{
@@ -121,7 +121,7 @@ return function (App $app) {
 
 			if($stm->execute($data)){
 				$json = array(
-					"status" => "succcess",
+					"status" => "success",
 					"message" => "Producto actualizado correctamente"
 				);
 			}else{
